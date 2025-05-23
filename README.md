@@ -1,4 +1,4 @@
-# blackjJack_assembly
+# black_jack_assembly
 Trabalho final da disciplina de Organização de Computadores
 
 ---
