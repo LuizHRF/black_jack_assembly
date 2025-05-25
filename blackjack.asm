@@ -1,40 +1,45 @@
-.data 
+					.data 
 
-	msg_bem_vindo: 		.string "Bem-vindo ao BlackJack!\n"
+	msg_bem_vindo: 			.string "Bem-vindo ao BlackJack!\n"
+
+	msg_adeus: 				.string "Até logo!\n"
 	
-	msg_jogar: 		.string "Deseja jogar? (1) Sim, (0) Não\n"
+	msg_jogar: 				.string "Deseja jogar? (1) Sim, (0) Não\n"
 	
 	msg_jogar_novamente: 	.string "Deseja jogar novamente? (1) Sim, (0) Não \n"
 	
-	msg_vencedor: 		.string "Você venceu!\n"
+	msg_vencedor: 			.string "Você venceu!\n"
 	
-	msg_perdedor: 		.string	"Você perdeu!\n"
+	msg_perdedor: 			.string	"Você perdeu!\n"
 	
-	msg_empate: 		.string "Empate!\n"
+	msg_empate: 			.string "Empate!\n"
 	
-	msg_jogador: 		.string "Sua mão: "
+	msg_jogador: 			.string "Sua mão: "
 	
-	msg_dealer: 		.string "Mão do dealer: "
+	msg_dealer: 			.string "Mão do dealer: "
 	
-	msg_acao: 		.string "\nEscolha uma ação: (1) Hit, (0) Stand\n\n"
+	msg_acao: 				.string "\nEscolha uma ação: (1) Hit, (0) Stand\n\n"
 	
-	msg_pontuacao: 		.string "Pontuação: \n"
+	msg_pontuacao: 			.string "Pontuação: \n"
 	
 	msg_pontuacao_jogador: 	.string "\tJogador: "
 	
 	msg_pontuacao_dealer: 	.string "\tDealer: "
 	
 	msg_total_de_cartas:	.string  "Total de cartas: "
+
+	msg_virgula:			.string ", "
+
+	msg_linha_nova:			.string "\n"
 	
 	# vetor para armazenar cartas do dealer e do jogador
 	
-	cartas_dealer: 		.word 0, 0, 0, 0, 0, 0, 0, 0, 0
+	cartas_dealer: 		.word 1, 2, 10, 1, 1, 1, 0, 0, 0
 	
-	cartas_jogador:		.word 0, 0, 0, 0, 0, 0, 0, 0, 0
-	
+	cartas_jogador:		.word 10, 12, 13, 1, 2, 0, 0, 0, 0
 
 
-.text
+				.text
 
 main:
 	
@@ -52,12 +57,16 @@ main:
 	ecall
 	
 	# se for 1, joga
+	
 	li a1, 1
-	beq a0, a1, jogar
-	
-	
-	# se for 0, termina
 	beqz a0, fim
+		
+	call imprime_cartas_jogador
+	call imprime_cartas_dealer
+	call imprime_cartas_dealer_filtro
+	
+	j fim
+	
 	
 jogar:
 	
@@ -65,10 +74,14 @@ jogar:
 	call gera_quatro_cartas_aleatorias
 	
 
-	
-
 fim:
+
+	la a0, msg_adeus
+	li a7, 4
+	ecall
 	
+	li a7, 10
+	ecall
 
 gera_quatro_cartas_aleatorias:
 	mv a6, ra	#guarda endereço de retorno para a label "jogar"
@@ -117,15 +130,3 @@ gera_carta_aleatoria:
 	li a7, 42
 	ecall
 	ret
-	
-
-
-	
-	
-	
-	
-	
-
-
-
-
