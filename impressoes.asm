@@ -1,23 +1,22 @@
 					.data 
 	
-	msg_jogador: 			.string "Sua mão: "
+	msg_jogador: 			.string "Sua mao: "
 	
-	msg_dealer: 			.string "Mão do dealer: "
+	msg_dealer: 			.string "Mao do dealer: "
 
 	msg_virgula:			.string ", "
 
 	msg_linha_nova:			.string "\n"
 
     msg_carta_anonima:     .string "[carta]"
-	
-	# vetor para armazenar cartas do dealer e do jogador
-	
-	cartas_dealer: 		.word 1, 2, 10, 1, 1, 1, 0, 0, 0
-	
-	cartas_jogador:		.word 10, 12, 13, 1, 2, 0, 0, 0, 0
 
+	msg_pontuacao: 			.string "Pontuacao: \n"
+	
+	msg_pontuacao_jogador: 	.string "\tJogador: "
 
-    .globl imprime_cartas_dealer, imprime_cartas_jogador, imprime_cartas_dealer_filtro
+	msg_pontuacao_dealer: 	.string "\tDealer: "
+
+    .globl imprime_cartas_dealer, imprime_cartas_jogador, imprime_cartas_dealer_filtro, imprime_pontos_mao_jogador, imprime_pontos_mao_dealer
 
 				.text
 
@@ -162,4 +161,51 @@ imprime_carta_anonima:		#Imprime carta anonima e virgula, utiliza a0 e a7
 	lw 		ra, 0(sp)			#Restaurando endereço de retorno
 	addi 	sp, sp, 4
 	
+	ret
+
+
+imprime_pontos_mao_jogador:			#Utiliza argumentos (a0, a1, a7) para imprimir pontos da mão do jogador | Preserva o ra
+	
+	addi 	sp, sp, -4			#Salvando endereço de retorno
+	sw 		ra, 0(sp)
+
+	li 		a7, 4
+	la 		a0, msg_pontuacao_jogador
+	ecall
+
+	li 		a7, 1
+	call 	calcula_pontos_jogador
+
+	ecall
+
+	la 		a0, msg_linha_nova
+	li 		a7, 4
+	ecall
+
+	lw 		ra, 0(sp)			#Restaurando endereço de retorno
+	addi 	sp, sp, 4
+		
+	ret
+
+imprime_pontos_mao_dealer:			#Utiliza argumentos (a0, a1, a7) para imprimir pontos da mão do dealer | Preserva o ra
+	
+	addi 	sp, sp, -4			#Salvando endereço de retorno
+	sw 		ra, 0(sp)
+
+	li 		a7, 4
+	la 		a0, msg_pontuacao_dealer
+	ecall
+
+	li 		a7, 1
+	call 	calcula_pontos_dealer
+
+	ecall
+
+	la 		a0, msg_linha_nova
+	li 		a7, 4
+	ecall
+
+	lw 		ra, 0(sp)			#Restaurando endereço de retorno
+	addi 	sp, sp, 4
+		
 	ret

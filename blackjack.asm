@@ -2,7 +2,7 @@
 
 	msg_bem_vindo: 			.string "Bem-vindo ao BlackJack!\n"
 
-	msg_adeus: 				.string "Até logo!\n"
+	msg_adeus: 				.string "Ate logo!\n"
 	
 	msg_jogar: 				.string "Deseja jogar? (1) Sim, (0) Não\n"
 	
@@ -14,11 +14,7 @@
 	
 	msg_empate: 			.string "Empate!\n"
 	
-	msg_jogador: 			.string "Sua mão: "
-	
-	msg_dealer: 			.string "Mão do dealer: "
-	
-	msg_acao: 				.string "\nEscolha uma ação: (1) Hit, (0) Stand\n\n"
+	msg_acao: 				.string "\nEscolha uma acao: (1) Hit, (0) Stand\n\n"
 	
 	msg_pontuacao: 			.string "Pontuação: \n"
 	
@@ -27,17 +23,17 @@
 	msg_pontuacao_dealer: 	.string "\tDealer: "
 	
 	msg_total_de_cartas:	.string  "Total de cartas: "
-
-	msg_virgula:			.string ", "
-
-	msg_linha_nova:			.string "\n"
 	
 	# vetor para armazenar cartas do dealer e do jogador
 	
 	cartas_dealer: 		.word 1, 2, 10, 1, 1, 1, 0, 0, 0
 	
-	cartas_jogador:		.word 10, 12, 13, 1, 2, 0, 0, 0, 0
+	cartas_jogador:		.word 10, 1, 1, 0, 0, 0, 0, 0, 0
 
+	vitorias_jogador:	.word 0
+	vitorias_dealer:	.word 0
+
+	.globl cartas_dealer, cartas_jogador, vitorias_jogador, vitorias_dealer
 
 				.text
 
@@ -62,9 +58,11 @@ main:
 	beqz a0, fim
 		
 	call imprime_cartas_jogador
+	call imprime_pontos_mao_jogador
+
 	call imprime_cartas_dealer
-	call imprime_cartas_dealer_filtro
-	
+	call imprime_pontos_mao_dealer
+
 	j fim
 	
 	
