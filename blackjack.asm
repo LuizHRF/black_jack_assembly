@@ -67,13 +67,26 @@ jogar:
 	addi 	sp, sp, -4			#Salvando endereço de retorno
 	sw 		ra, 0(sp)
 	
-	call gerar_cartas_iniciais  #inicia gerando as quatro cartas iniciais, duas do jogador e duas do dealer
+	call 	gerar_cartas_iniciais  #inicia gerando as quatro cartas iniciais, duas do jogador e duas do dealer
 
+	#Logica do jogo Hit e stay
 
-	call imprime_cartas_jogador
-	call imprime_pontos_mao_jogador
-	call imprime_cartas_dealer
-	call imprime_pontos_mao_dealer
+	    # Mostrar cartas inciais
+		# Pedir ação
+		# Verifica o que faz
+			#Se for hit:
+				#Gera Carta
+				#Calula pontos e verifica se não estourouou deu 21
+				#Exibe mão nova e pontos novos
+				#Retorna para pedir ação
+			#Se for stay:
+				#Vai pra lógica do dealer
+
+	# logica do dealer
+
+	call calcula_vencedor
+
+	call imrpime_vencedor
 
 	lw 		ra, 0(sp)			#Restaurando endereço de retorno
 	addi 	sp, sp, 4
