@@ -1,5 +1,5 @@
 
-.globl gerar_cartas_iniciais
+.globl gerar_cartas_iniciais, gera_carta_jogador, gera_carta_dealer
 
 
 .text
@@ -29,7 +29,7 @@ gera_carta_jogador:
     la      s0, cartas_jogador
     
     loop_gera_carta_jogador:
-    
+
     lw 		a0, 0(s0) 
 	beqz    a0, adiciona_carta_jogador    #encontra posição para adicionar carta
     addi    s0, s0, 4	
@@ -38,10 +38,11 @@ gera_carta_jogador:
 
     adiciona_carta_jogador: 
 
-        li      a1, 13
+        li      a1, 12
         li      a7, 42
         ecall
 
+        addi a0, a0, 1
         sw      a0, 0(s0)
         ret
 
@@ -61,10 +62,11 @@ gera_carta_dealer:
 
     adiciona_carta_dealer: 
 
-        li      a1, 13
+        li      a1, 12
         li      a7, 42
         ecall
 
+        addi a0, a0, 1
         sw      a0, 0(s1)
         ret
 
