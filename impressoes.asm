@@ -12,9 +12,9 @@
 
 	msg_pontuacao: 			.string "Pontuacao: \n"
 	
-	msg_pontuacao_jogador: 	.string "\tJogador: "
+	msg_pontuacao_jogador: 	.string "\tSeus pontos: "
 
-	msg_pontuacao_dealer: 	.string "\tDealer: "
+	msg_pontuacao_dealer: 	.string "\tPontos do dealer: "
 
 	msg_linha: 				.string "================================\n"
 

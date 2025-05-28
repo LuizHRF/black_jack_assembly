@@ -100,7 +100,7 @@ calcula_pontos_dealer:			#Retorna em a0 o valor nas mãos do dealer, utiliza tem
 		
 		ret
 
-calcula_vencedor:                       #Verifica quem ganhou, retorna em a0: a0<0 se o dealer foi vencedor, a0==0 se deu empate e a0>0 se o jogador foi vencedor | Utiliza s3 e s4
+calcula_vencedor:               #Verifica quem ganhou, retorna em a0: a0<0 se o dealer foi vencedor, a0==0 se deu empate e a0>0 se o jogador foi vencedor | Utiliza s3 e s4
 
     addi    sp, sp, -4			#Salvando endereço de retorno
     sw 		ra, 0(sp)
@@ -108,10 +108,25 @@ calcula_vencedor:                       #Verifica quem ganhou, retorna em a0: a0
     call    calcula_pontos_jogador  
     mv      s3, a0                
     call    calcula_pontos_dealer  
-    mv      s4, a0                
+    mv      s4, a0             
+
+    slti    t0, s3, 22        #t0 vai ser 0 se o jogador estourou 
+    slti    t1, s4, 22        #t1 vai ser 0 se o dealer estourou  
+
+    beqz    t0, calcula_vencedor_dealer_vence   
+    beqz    t1, calcula_vencedor_jogador_vence  
 
     sub     a0, s3, s4
+    j       calcula_vencedor_fim
 
+    calcula_vencedor_dealer_vence:
+    li      a0, -1
+    j       calcula_vencedor_fim
+
+    calcula_vencedor_jogador_vence:
+    li      a0, 1
+
+    calcula_vencedor_fim:
     lw 		ra, 0(sp)			#Restaurando endereço de retorno
     addi 	sp, sp, 4
 		
