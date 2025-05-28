@@ -3,7 +3,7 @@
 
             .text
 
-calcula_pontos_jogador:			#Retorna em a0 o valor nasmãos do jogador, utiliza temporarios, s0, s1 e argumentos | Preserva o ra
+calcula_pontos_jogador:			#Retorna em a0 o valor nas mãos do jogador, utiliza temporarios, s0, s1 e argumentos | Preserva o ra
 	
 	addi 	sp, sp, -4			#Salvando endereço de retorno
 	sw 		ra, 0(sp)

@@ -195,7 +195,7 @@ imprime_pontos_mao_jogador:			#Utiliza argumentos (a0, a1, a7) para imprimir pon
 		
 	ret
 
-imprime_pontos_mao_dealer:			#Utiliza argumentos (a0, a1, a7) para imprimir pontos da mão do dealer | Preserva o ra
+imprime_pontos_mao_dealer:			#Utiliza argumentos (a0, a1, a7) para calcular e imprimir pontos da mão do dealer | Preserva o ra
 	
 	addi 	sp, sp, -4			#Salvando endereço de retorno
 	sw 		ra, 0(sp)

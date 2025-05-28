@@ -8,19 +8,7 @@
 	
 	msg_jogar_novamente: 	.string "Deseja jogar novamente? (1) Sim, (0) Não \n"
 	
-	msg_vencedor: 			.string "Você venceu!\n"
-	
-	msg_perdedor: 			.string	"Você perdeu!\n"
-	
-	msg_empate: 			.string "Empate!\n"
-	
-	msg_acao: 				.string "\nEscolha uma acao: (1) Hit, (0) Stay\n\n"
-	
-	msg_pontuacao: 			.string "Pontuação: \n"
-	
-	msg_pontuacao_jogador: 	.string "\tJogador: "
-	
-	msg_pontuacao_dealer: 	.string "\tDealer: "
+	msg_acao: 				.string "\nEscolha uma acao: \n\t[1] Hit | [0] Stay\n\n"
 	
 	msg_total_de_cartas:	.string  "Total de cartas: "
 	
@@ -69,48 +57,41 @@ jogar:
 	
 	call 	gerar_cartas_iniciais  #inicia gerando as quatro cartas iniciais, duas do jogador e duas do dealer
 
-	call imprime_cartas_jogador
+	call imprime_cartas_jogador				#Mostra informações iniciais
 	call imprime_pontos_mao_jogador
 	call imprime_cartas_dealer_filtro
 
-	#Logica do jogo Hit e stay
-
-	    # Mostrar cartas inciais
-		# Pedir ação
-
-	acao_jogador:
+	acao_jogador:							#Pede ação do jogador
 
 		la a0, msg_acao
 		li a7, 4
 		ecall
 
-			# Verifica o que faz
-
 		li a7, 5
 		ecall
-		beq a0, zero, dealer_joga
+		beq a0, zero, dealer_joga  		# Verifica o que faz
 			
-			#Se for hit:
-					#Gera Carta Jogador
+		#Se for hit:	
 		call gera_carta_jogador
 		call imprime_cartas_jogador
 		call imprime_pontos_mao_jogador
-
 		call calcula_pontos_jogador
-		slti t0, a0, 22 	#verifica se a mão do jogador passou de 21		
 
+		slti t0, a0, 22 				#verifica se a mão do jogador passou de 21		
 		beqz t0, fim_rodada
 		j acao_jogador
-		
 
-				#Calula pontos e verifica se não estourouou deu 21
-				#Exibe mão nova e pontos novos
-				#Retorna para pedir ação
-			#Se for stay:
-				#Vai pra lógica do dealer
-
-	# logica do dealer
 	dealer_joga:
+
+
+		call 	calcula_pontos_dealer
+		slti 	t0, a0, 17 					#verifica se a mão do dealer passou de 17 ou de 22
+		beqz 	t0, fim_rodada
+
+		call 	gera_carta_dealer
+		call 	imprime_cartas_dealer
+
+		j dealer_joga
 
 	fim_rodada:
 
