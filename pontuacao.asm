@@ -3,7 +3,7 @@
 
             .text
 
-calcula_pontos_jogador:			#Retorna em a0 o valor nasmãos do jogador | Preserva o ra
+calcula_pontos_jogador:			#Retorna em a0 o valor nasmãos do jogador, utiliza temporarios, s0, s1 e argumentos | Preserva o ra
 	
 	addi 	sp, sp, -4			#Salvando endereço de retorno
 	sw 		ra, 0(sp)
@@ -11,7 +11,7 @@ calcula_pontos_jogador:			#Retorna em a0 o valor nasmãos do jogador | Preserva 
 
 	la 		s0, cartas_jogador
     li 		a0, 0                #Valor total
-    li 		t0, 0                #Tem �?s nas mãos
+    li 		t0, 0                #Tem as nas mãos
     li      t1, 1
     li      t2, 10
     li      t6, 21
@@ -52,7 +52,7 @@ calcula_pontos_jogador:			#Retorna em a0 o valor nasmãos do jogador | Preserva 
 		ret
 
 
-calcula_pontos_dealer:			#Retorna em a0 o valor nas mãos do dealer | Preserva o ra
+calcula_pontos_dealer:			#Retorna em a0 o valor nas mãos do dealer, utiliza temporarios, s0, s1 e argumentos | Preserva o ra
 	
 	addi 	sp, sp, -4			#Salvando endereço de retorno
 	sw 		ra, 0(sp)

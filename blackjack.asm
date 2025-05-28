@@ -26,9 +26,9 @@
 	
 	# vetor para armazenar cartas do dealer e do jogador
 	
-	cartas_dealer: 		.word 1, 2, 10, 1, 1, 1, 0, 0, 0
+	cartas_dealer: 		.word 0, 0, 0, 0, 0, 0, 0, 0, 0
 	
-	cartas_jogador:		.word 10, 1, 1, 0, 0, 0, 0, 0, 0
+	cartas_jogador:		.word 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 	vitorias_jogador:	.word 0
 	vitorias_dealer:	.word 0
@@ -57,20 +57,22 @@ main:
 	li a1, 1
 	beqz a0, fim
 		
-	call imprime_cartas_jogador
-	call imprime_pontos_mao_jogador
-
-	call imprime_cartas_dealer
-	call imprime_pontos_mao_dealer
+	call jogar
 
 	j fim
 	
 	
 jogar:
+
+	addi 	sp, sp, -4			#Salvando endereço de retorno
+	sw 		ra, 0(sp)
 	
-	#inicia gerando as quatro cartas iniciais, duas do jogador e duas do dealer
-	call gera_quatro_cartas_aleatorias
-	
+	call gera_quatro_cartas_aleatorias  #inicia gerando as quatro cartas iniciais, duas do jogador e duas do dealer
+
+	lw 		ra, 0(sp)			#Restaurando endereço de retorno
+	addi 	sp, sp, 4
+		
+	ret
 
 fim:
 
@@ -87,36 +89,23 @@ gera_quatro_cartas_aleatorias:
 	gera_cartas:
 	
 	# gera cartas do jogador
-	la t1, cartas_jogador
+	la s0, cartas_jogador
 	call gera_carta_aleatoria
-	sw a0, 0(t1)
+	sw a0, 0(s0)
 	call gera_carta_aleatoria
-	sw a0, 4(t1)
+	sw a0, 4(s0)
 	
 	# gera cartas do dealer
-	la t2, cartas_dealer
+	la s1, cartas_dealer
 	call gera_carta_aleatoria
-	sw a0, 0(t2)
+	sw a0, 0(s1)
 	call gera_carta_aleatoria
-	sw a0, 4(t2)
+	sw a0, 4(s1)
 	
-	# imprime cartas do jogador
-	lw a0, 0(t1)
-	li a7, 1
-	ecall
-	
-	lw a0, 4(t1)
-	li a7, 1
-	ecall
-	
-	# imprime cartas do dealer
-	lw a0, 0(t2)
-	li a7, 1
-	ecall
-	
-	lw a0, 4(t2)
-	li a7, 1
-	ecall
+	call imprime_cartas_jogador
+	call imprime_pontos_mao_jogador
+	call imprime_cartas_dealer
+	call imprime_pontos_mao_dealer
 	
 	mv ra, a6
 	ret
@@ -127,4 +116,5 @@ gera_carta_aleatoria:
 	li a1, 13
 	li a7, 42
 	ecall
+
 	ret
