@@ -1,10 +1,10 @@
 					.data 
 	
-	msg_jogador: 			.string "Sua mao: "
+	msg_jogador: 			.string "Sua mao: |"
 	
-	msg_dealer: 			.string "Mao do dealer: "
+	msg_dealer: 			.string "Mao do dealer: | "
 
-	msg_virgula:			.string ", "
+	msg_virgula:			.string " | "
 
 	msg_linha_nova:			.string "\n"
 
@@ -16,7 +16,15 @@
 
 	msg_pontuacao_dealer: 	.string "\tDealer: "
 
-    .globl imprime_cartas_dealer, imprime_cartas_jogador, imprime_cartas_dealer_filtro, imprime_pontos_mao_jogador, imprime_pontos_mao_dealer
+	msg_linha: 				.string "================================\n"
+
+	msg_resultado_final:	.string "======= RESULTADO FINAL ======== \n"
+
+	msg_vencedor: 			.string "         VOCE VENCEU!\n\n"
+	msg_perdedor: 			.string "        DEALER VENCEU!\n\n"
+	msg_empate: 			.string "           EMPATE!\n\n"
+
+    .globl imprime_cartas_dealer, imprime_cartas_jogador, imprime_cartas_dealer_filtro, imprime_pontos_mao_jogador, imprime_pontos_mao_dealer, imrpime_vencedor
 
 				.text
 
@@ -209,3 +217,50 @@ imprime_pontos_mao_dealer:			#Utiliza argumentos (a0, a1, a7) para imprimir pont
 	addi 	sp, sp, 4
 		
 	ret
+
+imrpime_vencedor:		#Recebe em a0: a0<0 se o dealer ganhou, a0>0 se o jogador ganhou, a0=0 se deu empate | Preserva o ra
+
+	addi 	sp, sp, -4			#Salvando endereço de retorno
+	sw 		ra, 0(sp)
+
+	mv 		t1, a0
+
+	li 		a7, 4
+
+	la 		a0, msg_linha
+	ecall
+
+	la 		a0, msg_resultado_final
+	ecall
+
+	la 		a0, msg_linha
+	ecall
+
+	beqz    t1, empate
+	bgtz    t1, jogador_venceu
+
+	dealer_venceu:
+	la 		a0, msg_perdedor
+	ecall
+	j 		fim_imprime_vencedor
+	
+	jogador_venceu:
+	la 		a0, msg_vencedor
+	ecall
+	j 		fim_imprime_vencedor
+
+	empate:
+	la 		a0, msg_empate
+	ecall
+
+	fim_imprime_vencedor:
+	call imprime_cartas_jogador
+	call imprime_pontos_mao_jogador
+	call imprime_cartas_dealer
+	call imprime_pontos_mao_dealer
+
+	lw 		ra, 0(sp)			#Restaurando endereço de retorno
+	addi 	sp, sp, 4
+		
+	ret
+
