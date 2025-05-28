@@ -67,7 +67,13 @@ jogar:
 	addi 	sp, sp, -4			#Salvando endereço de retorno
 	sw 		ra, 0(sp)
 	
-	call gera_quatro_cartas_aleatorias  #inicia gerando as quatro cartas iniciais, duas do jogador e duas do dealer
+	call gerar_cartas_iniciais  #inicia gerando as quatro cartas iniciais, duas do jogador e duas do dealer
+
+
+	call imprime_cartas_jogador
+	call imprime_pontos_mao_jogador
+	call imprime_cartas_dealer
+	call imprime_pontos_mao_dealer
 
 	lw 		ra, 0(sp)			#Restaurando endereço de retorno
 	addi 	sp, sp, 4
@@ -83,38 +89,3 @@ fim:
 	li a7, 10
 	ecall
 
-gera_quatro_cartas_aleatorias:
-	mv a6, ra	#guarda endereço de retorno para a label "jogar"
-	
-	gera_cartas:
-	
-	# gera cartas do jogador
-	la s0, cartas_jogador
-	call gera_carta_aleatoria
-	sw a0, 0(s0)
-	call gera_carta_aleatoria
-	sw a0, 4(s0)
-	
-	# gera cartas do dealer
-	la s1, cartas_dealer
-	call gera_carta_aleatoria
-	sw a0, 0(s1)
-	call gera_carta_aleatoria
-	sw a0, 4(s1)
-	
-	call imprime_cartas_jogador
-	call imprime_pontos_mao_jogador
-	call imprime_cartas_dealer
-	call imprime_pontos_mao_dealer
-	
-	mv ra, a6
-	ret
-		
-		
-gera_carta_aleatoria:
-	
-	li a1, 13
-	li a7, 42
-	ecall
-
-	ret
