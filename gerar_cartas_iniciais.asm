@@ -1,3 +1,5 @@
+#Daniele Rohr - 2121101060
+#Luiz Henrique Rigo Faccio - 2211100003
 
 .globl gerar_cartas_iniciais, gera_carta_jogador, gera_carta_dealer
 
@@ -43,7 +45,18 @@ gera_carta_jogador:
         ecall
 
         addi a0, a0, 1
+
+        addi 	sp, sp, -4			#Salvando endereço de retorno
+	    sw 		ra, 0(sp)
+
+        #verificar se a carta é válida
+        call validar_carta
+
         sw      a0, 0(s0)
+
+        lw 		ra, 0(sp)			#Restaurando endereço de retorno
+	    addi 	sp, sp, 4
+
         ret
 
 
@@ -67,7 +80,17 @@ gera_carta_dealer:
         ecall
 
         addi a0, a0, 1
+
+        addi 	sp, sp, -4			#Salvando endereço de retorno
+	    sw 		ra, 0(sp)
+        #verificar se a carta é válida
+        call validar_carta
+    
         sw      a0, 0(s1)
+
+        lw 		ra, 0(sp)			#Restaurando endereço de retorno
+        addi 	sp, sp, 4
+            
         ret
 
         
