@@ -33,7 +33,10 @@ validar_carta:
 	#registradores: a2 para comparar valor, a3 para armazenar valor do endereço, a4 para armazenar valor do vetor, a5 para comparar valor com 4
 
 	li a5, 4	#comparar valor no vetor de baralho
-	li t2, 40 	#comparar valor de cartas distribuídas	
+	li t2, 40 	#comparar valor de cartas distribuídas
+	li t3, 0    #para resetar o baralho - contador
+	li t4, 13	#para resetar o baralho - i final
+	li t5, 0	#valor 0 par armazenar no vetor
 		
 
 	#verifica se o baralho é válido:
@@ -252,8 +255,21 @@ validar_carta:
 
 	
 
-	#resetar_baralho:
+	resetar_baralho:
 
+		li s11, 0 	# reseta contador
+
+		la t6, baralho	#carrega endereço do vetor
+
+	loop_reset:
+		
+		beq  t3, t4, carta_invalida # verifica se já percorreu todo o vetor. Quanto percorrer, gera nova carta válida
+
+		sw t5, 0(t6)	#coloca 0 nas posições
+
+		addi t6, t6, 4	#atualiza endereço
+
+		j loop_reset
 
 
 	retorna_valor:
@@ -262,9 +278,3 @@ validar_carta:
 	    addi 	sp, sp, 4
 
 		ret
-
-	
-
-
-
-

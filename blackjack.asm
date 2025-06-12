@@ -1,4 +1,7 @@
-					.data 
+#Daniele Rohr - 2121101060
+#Luiz Henrique Rigo Faccio - 2211100003
+	
+										.data 
 
 	msg_bem_vindo: 			.string "Bem-vindo ao BlackJack!\n"
 
@@ -12,11 +15,11 @@
 	
 	msg_total_de_cartas:	.string  "Total de cartas: "
 	
-	# vetor para armazenar cartas do dealer e do jogador
+	# vetor para armazenar cartas do dealer e do jogador. O máximo de cartas que pode sair por rodada é 11, deixei 12 para o caso do jogador querer perder kkkk
 	
-	cartas_dealer: 		.word 0, 0, 0, 0, 0, 0, 0, 0, 0
+	cartas_dealer: 		.word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	
-	cartas_jogador:		.word 0, 0, 0, 0, 0, 0, 0, 0, 0
+	cartas_jogador:		.word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 	vitorias_jogador:	.word 0
 	vitorias_dealer:	.word 0
@@ -37,15 +40,21 @@ main:
 	li a7, 4
 	ecall
 	
-	li a7, 5
-	ecall
-	
-	# se for 1, joga
-	
-	li a1, 1
-	beqz a0, fim
+	loop_jogar:
+		li a7, 5
+		ecall
+			
+		# se for 1, joga
 		
-	call jogar
+		beqz a0, fim
+		
+		call resetar_maos
+		call jogar
+
+		la a0, msg_jogar_novamente
+		li a7, 4
+		ecall
+		j loop_jogar
 
 	j fim
 	
@@ -112,4 +121,3 @@ fim:
 	
 	li a7, 10
 	ecall
-
