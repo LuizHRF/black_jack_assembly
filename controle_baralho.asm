@@ -7,11 +7,9 @@
 	baralho: 				.word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 	
-    .globl validar_carta, validar_baralho, resetar_baralho, baralho
+    .globl validar_carta, validar_baralho, resetar_baralho, baralho, calcular_cartas_utilizadas
 
 				.text
-
-	li s11, 0	#contador de cartas distribuídas - NÃO UTILIZAR S11 PARA MAIS NADA
 
 validar_carta:			
 	
@@ -46,9 +44,6 @@ validar_carta:
 	
 	carta_valida:
 
-		#incrementar contador de cartas que já saíram
-		addi s11, s11, 1
-
 		#incrementar o valor a carta e atualizar o valor na memória
 		addi a4, a4, 1
 		sw a4, 0(a3)
@@ -68,7 +63,8 @@ validar_baralho:
 		sw 		ra, 0(sp)
 
 		li t1, 40
-		bgt s11, t1, resetar_baralho
+		call calcular_cartas_utilizadas 
+		bgt a0, t1, resetar_baralho
 
 		j validar_baralho_fim
 
@@ -79,8 +75,6 @@ validar_baralho:
 
 			li t3, 13
 			li t4, 0
-
-			li s11, 0 	# reseta contador
 
 		loop_reset:
 			
@@ -94,6 +88,37 @@ validar_baralho:
 			j loop_reset
 
 	validar_baralho_fim: 
+
+		lw 		ra, 0(sp)			#Restaurando endereço de retorno
+		addi 	sp, sp, 4
+
+		ret
+
+calcular_cartas_utilizadas:			#Retorna em a0 o número de cartas utilizadas
+
+	addi 	sp, sp, -4			#Salvando endereço de retorno
+	sw 		ra, 0(sp)
+
+	la t3, baralho
+
+	li t0, 13
+	li t1, 0
+	li a0, 0					#contador de cartas restantes	
+
+	loop_calcular_cartas_restantes:
+			
+		beq t0, t1, calcular_cartas_restantes_fim
+
+		lw t4, 0(t3) #carrega valor da posição do baralho
+
+		add a0, a0, t4
+
+		addi t3, t3, 4 #atualiza endereço
+		addi t1, t1, 1  #atualiza indexador
+
+		j loop_calcular_cartas_restantes
+
+	calcular_cartas_restantes_fim: 
 
 		lw 		ra, 0(sp)			#Restaurando endereço de retorno
 		addi 	sp, sp, 4

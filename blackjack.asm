@@ -45,8 +45,9 @@ loop_jogar:
 	ecall
 
 	#imprimir total de cartas
-	li a0, 52	#carrega o valor 52
-	sub a0, a0, s11 #subtrai o total de cartas que ja saíram e chama syscall
+	li s1, 52	#carrega o valor 52
+	call calcular_cartas_utilizadas
+	sub a0, s1, a0 #subtrai o total de cartas que ja saíram e chama syscall
 	li a7, 1
 	ecall
 
