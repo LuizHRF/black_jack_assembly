@@ -13,20 +13,18 @@
 	
 	msg_acao: 				.string "\nEscolha uma acao: \n\t[1] Hit | [0] Stay\n\n"
 	
-	msg_total_de_cartas:	.string  "Total de cartas: "
+	msg_total_de_cartas:	.string  "Cartas no baralho: "
 
 	msg_pontos_jogador:		.string  "         Jogador: "
 
 	msg_pontos_dealer:		.string  "         Dealer: "
-
-	
-	# vetor para armazenar cartas do dealer e do jogador. O máximo de cartas que pode sair por rodada é 11, deixei 12 para o caso do jogador querer perder kkkk
 	
 	cartas_dealer: 		.word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	
 	cartas_jogador:		.word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 	vitorias_jogador:	.word 0
+
 	vitorias_dealer:	.word 0
 
 	.globl cartas_dealer, cartas_jogador, vitorias_jogador, vitorias_dealer
@@ -38,7 +36,6 @@ main:
 	la a0, msg_bem_vindo
 	li a7, 4
 	ecall
-
 
 loop_jogar:
 	
@@ -64,7 +61,8 @@ loop_jogar:
 	ecall
 
 	#imprimir pontos
-	mv a0, t5
+	la t0, vitorias_jogador
+	lw a0, 0(t0)				#carrega o valor de vitorias_jogador
 	li a7, 1
 	ecall
 
@@ -78,7 +76,8 @@ loop_jogar:
 	ecall
 
 	#imprimir pontos
-	mv a0, s2
+	la t0, vitorias_dealer
+	lw a0, 0(t0)	
 	li a7, 1
 	ecall
 
@@ -92,22 +91,20 @@ loop_jogar:
 	li a7, 4
 	ecall
 	
-	
-		li a7, 5
-		ecall
-			
-		# se for 1, joga
+	li a7, 5
+	ecall
 		
-		beqz a0, fim
-		
-		call resetar_maos
-		call jogar
-
-		j loop_jogar
-
-	j fim
+	# se for 1, joga
 	
+	beqz a0, fim
 	
+	call validar_baralho
+	call imprime_baralho
+	call resetar_maos
+	call jogar
+
+	j loop_jogar
+
 jogar:
 
 	addi 	sp, sp, -4			#Salvando endereço de retorno
@@ -141,7 +138,6 @@ jogar:
 
 	dealer_joga:
 
-
 		call 	calcula_pontos_dealer
 		slti 	t0, a0, 17 					#verifica se a mão do dealer passou de 17 ou de 22
 		beqz 	t0, fim_rodada
@@ -154,16 +150,25 @@ jogar:
 	fim_rodada:
 
 	call calcula_vencedor
-
 	call imprime_vencedor
-	#verificar quantidade de cartas no baralho
-	call validar_baralho
-	call imprime_baralho  
+	call calcula_vencedor  
 
+	bltz a0, ponto_dealer
+	bgtz a0, ponto_jogador
+
+	retorno_rodada:
 	lw 		ra, 0(sp)			#Restaurando endereço de retorno
 	addi 	sp, sp, 4
 		
 	ret
+
+	ponto_dealer:
+	call adiciona_ponto_dealer
+	j retorno_rodada
+
+	ponto_jogador:
+	call adiciona_ponto_jogador
+	j retorno_rodada
 
 fim:
 

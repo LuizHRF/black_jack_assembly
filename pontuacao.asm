@@ -2,7 +2,7 @@
 #Luiz Henrique Rigo Faccio - 2211100003
 
 
-    .globl calcula_pontos_jogador, calcula_pontos_dealer, calcula_vencedor
+    .globl calcula_pontos_jogador, calcula_pontos_dealer, calcula_vencedor, adiciona_ponto_jogador, adiciona_ponto_dealer
 
             .text
 
@@ -125,20 +125,45 @@ calcula_vencedor:               #Verifica quem ganhou, retorna em a0: a0<0 se o 
 
     calcula_vencedor_dealer_vence:
 
-    #total de vitórias do dealer fica em s2 (NÃO USAR PARA OUTRAS OPERAÇÕES)
-
     li      a0, -1
-    addi s2, s2, 1
     j       calcula_vencedor_fim
 
     calcula_vencedor_jogador_vence:
 
-    #total de vitórias do jogador fica em t5 (NÃO USAR PARA OUTRAS OPERAÇÕES)
     li      a0, 1
-    addi t5, t5, 1
 
     calcula_vencedor_fim:
     lw 		ra, 0(sp)			#Restaurando endereço de retorno
     addi 	sp, sp, 4
 		
+	ret
+
+adiciona_ponto_jogador:
+
+	addi 	sp, sp, -4			#Salvando endereço de retorno
+	sw 		ra, 0(sp)
+
+    la      t1, vitorias_jogador
+	lw 		t0, 0(t1)
+	addi 	t0, t0, 1
+	sw 		t0, 0(t1)
+
+	lw 		ra, 0(sp)			#Restaurando endereço de retorno
+	addi 	sp, sp, 4
+
+	ret
+
+adiciona_ponto_dealer:
+
+	addi 	sp, sp, -4			#Salvando endereço de retorno
+	sw 		ra, 0(sp)
+
+    la      t1, vitorias_dealer 
+	lw 		t0, 0(t1)
+	addi 	t0, t0, 1
+	sw 		t0, 0(t1)
+
+	lw 		ra, 0(sp)			#Restaurando endereço de retorno
+	addi 	sp, sp, 4
+
 	ret

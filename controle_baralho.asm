@@ -11,7 +11,6 @@
 
 				.text
 
-
 	li s11, 0	#contador de cartas distribuídas - NÃO UTILIZAR S11 PARA MAIS NADA
 
 validar_carta:			
@@ -19,42 +18,31 @@ validar_carta:
 	#receber valor da carta
 	#buscar valor do vetor na posição da carta
 	#verificar se valor é menor ou igual a 4
-	#verificar se não saíram 40 cartas no baralho atual
-	#se a carta for válida, retornar o valor para a função que gera as cartas e atualizar contador de cartas (para saber quando o baralho chegou em 40)
 
+	#se a carta for válida, retorna 1 em a1, se for invalida, retorna 0 em a1
 
 	addi 	sp, sp, -4			#Salvando endereço de retorno
 	sw 		ra, 0(sp)
-	
 
 	#valor da carta está em a0
 	la a3, baralho 	#armazena endereço do vetor
 	li a2, 4 		#armazena para encontrar posição do vetor
-	
 
 	addi a1, a0, -1 	#faz o valor da carta - 1
-	mul a1, a1, a2 	# multiplica por 4 para encontrar a posição do vetor
+	mul a1, a1, a2 		# multiplica por 4 para encontrar o offset
 
 	#atualizar endereço 
 	add a3, a3, a1 
-
-	#carregar valor presente na posição da carta
 	lw a4, 0(a3)
 
 	#verifica se valor presente na posição é menor que 4
 	ble a4, a2, carta_valida #se for menor que 4, a carta é válida
 
-
 	carta_invalida:	
 
-		# gera outra carta aleatória e inicia a verificação novamente
-		li      a1, 12
-        li      a7, 42
-        ecall
-
-        addi a0, a0, 1
-		j validar_carta
-
+		#carta inválida, retorna 0 em a1
+		li a1, 0
+		j retorna_valor
 	
 	carta_valida:
 
@@ -64,32 +52,27 @@ validar_carta:
 		#incrementar o valor a carta e atualizar o valor na memória
 		addi a4, a4, 1
 		sw a4, 0(a3)
-		#retornar valor
+		
+		li a1, 1	#carta válida, retorna 1 em a1
 
 	retorna_valor:
 
-		lw 		ra, 0(sp)			#Restaurando endereço de retorno
-	    addi 	sp, sp, 4
+	lw 		ra, 0(sp)			#Restaurando endereço de retorno
+	addi 	sp, sp, 4
 
-		ret
-
+	ret
 
 validar_baralho:
 
 		addi 	sp, sp, -4			#Salvando endereço de retorno
 		sw 		ra, 0(sp)
 
-		#verifica se já saíram 40 cartas ao longo das rodadas
-		li a6, 52
-		li a5, 12
-		sub a6, a6, s11
-
-		beq a6, a5, resetar_baralho
+		li t1, 40
+		bgt s11, t1, resetar_baralho
 
 		j validar_baralho_fim
 
 	resetar_baralho:
-
 		
 			#carrega endereço do baralho
 			la t6, baralho
@@ -99,21 +82,20 @@ validar_baralho:
 
 			li s11, 0 	# reseta contador
 
-			
 		loop_reset:
 			
-			beq  t3, t4, validar_baralho_fim # verifica se já percorreu todo o vetor. Quanto percorrer, gera nova carta válida
+			beq t3, t4, validar_baralho_fim # verifica se já percorreu todo o vetor. Quanto percorrer, gera nova carta válida
 
 			sw zero, 0(t6)	#coloca 0 nas posições
 
 			addi t6, t6, 4	#atualiza endereço
-			addi t4, t4, 1  #atualiza contador
+			addi t4, t4, 1  #atualiza indexador
 
 			j loop_reset
 
-		validar_baralho_fim: 
+	validar_baralho_fim: 
 
-			lw 		ra, 0(sp)			#Restaurando endereço de retorno
-			addi 	sp, sp, 4
+		lw 		ra, 0(sp)			#Restaurando endereço de retorno
+		addi 	sp, sp, 4
 
-			ret
+		ret

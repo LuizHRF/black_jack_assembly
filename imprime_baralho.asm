@@ -9,16 +9,14 @@ msg_sep:        .string ": "
 .text
 
 
-
-
 imprime_baralho:            # Imprime o vetor baralho com as quantidades de cada carta distribuída
 
     addi sp, sp, -4
     sw ra, 0(sp)
 
     la t0, baralho          # Endereço base do vetor baralho
-    li t1, 1                # Índice da carta (de 1 a 12)
-    li t2, 12               # Total de cartas diferentes (1 a 12)
+    li t1, 0                # Índice da carta (de 1 a 12)
+    li t2, 13               # Total de cartas diferentes (1 a 12)
 
     la a0, msg_linha_nova
     li a7, 4
@@ -34,7 +32,7 @@ imprime_baralho:            # Imprime o vetor baralho com as quantidades de cada
         ecall
 
         # Imprimir número da carta (t1)
-        mv a0, t1
+        addi a0, t1, 1
         li a7, 1
         ecall
 
