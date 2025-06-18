@@ -1,3 +1,7 @@
+#Daniele Rohr - 2121101060
+#Luiz Henrique Rigo Faccio - 2211100003
+
+
 					.data 
 	
 	msg_jogador: 			.string "Sua mao: |"
@@ -10,7 +14,7 @@
 
     msg_carta_anonima:     .string "[carta]"
 
-	msg_pontuacao: 			.string "Pontuacao: \n"
+	msg_pontuacao: 			.string "\n Pontuacao: \n"
 	
 	msg_pontuacao_jogador: 	.string "\tSeus pontos: "
 
@@ -24,7 +28,7 @@
 	msg_perdedor: 			.string "        DEALER VENCEU!\n\n"
 	msg_empate: 			.string "           EMPATE!\n\n"
 
-    .globl imprime_cartas_dealer, imprime_cartas_jogador, imprime_cartas_dealer_filtro, imprime_pontos_mao_jogador, imprime_pontos_mao_dealer, imrpime_vencedor
+    .globl msg_pontuacao, imprime_cartas_dealer, imprime_cartas_jogador, imprime_cartas_dealer_filtro, imprime_pontos_mao_jogador, imprime_pontos_mao_dealer, imprime_vencedor, msg_linha_nova
 
 				.text
 
@@ -218,7 +222,7 @@ imprime_pontos_mao_dealer:			#Utiliza argumentos (a0, a1, a7) para calcular e im
 		
 	ret
 
-imrpime_vencedor:		#Recebe em a0: a0<0 se o dealer ganhou, a0>0 se o jogador ganhou, a0=0 se deu empate | Preserva o ra
+imprime_vencedor:		#Recebe em a0: a0<0 se o dealer ganhou, a0>0 se o jogador ganhou, a0=0 se deu empate | Preserva o ra
 
 	addi 	sp, sp, -4			#Salvando endereço de retorno
 	sw 		ra, 0(sp)
@@ -263,4 +267,3 @@ imrpime_vencedor:		#Recebe em a0: a0<0 se o dealer ganhou, a0>0 se o jogador gan
 	addi 	sp, sp, 4
 		
 	ret
-

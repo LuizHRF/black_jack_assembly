@@ -75,7 +75,7 @@ gera_carta_dealer:
 
     adiciona_carta_dealer: 
 
-        li      a1, 12
+        li      a1, 13
         li      a7, 42
         ecall
 

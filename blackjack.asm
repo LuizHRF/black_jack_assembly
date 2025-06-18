@@ -14,6 +14,11 @@
 	msg_acao: 				.string "\nEscolha uma acao: \n\t[1] Hit | [0] Stay\n\n"
 	
 	msg_total_de_cartas:	.string  "Total de cartas: "
+
+	msg_pontos_jogador:		.string  "         Jogador: "
+
+	msg_pontos_dealer:		.string  "         Dealer: "
+
 	
 	# vetor para armazenar cartas do dealer e do jogador. O máximo de cartas que pode sair por rodada é 11, deixei 12 para o caso do jogador querer perder kkkk
 	
@@ -33,14 +38,61 @@ main:
 	la a0, msg_bem_vindo
 	li a7, 4
 	ecall
+
+
+loop_jogar:
 	
+	# mensagem total de cartas
+	la a0, msg_total_de_cartas
+	li a7, 4
+	ecall
+
+	#imprimir total de cartas
+	li a0, 52	#carrega o valor 52
+	sub a0, a0, s11 #subtrai o total de cartas que ja saíram e chama syscall
+	li a7, 1
+	ecall
+
+	#mensagem pontuação
+	la a0, msg_pontuacao
+	li a7, 4
+	ecall
+
+	#mensagem pontuação jogador
+	la a0, msg_pontos_jogador
+	li a7, 4
+	ecall
+
+	#imprimir pontos
+	mv a0, t5
+	li a7, 1
+	ecall
+
+	la, a0, msg_linha_nova
+	li a7, 4
+	ecall
+
+	#mensagem pontuação dealer:
+	la a0, msg_pontos_dealer
+	li a7, 4
+	ecall
+
+	#imprimir pontos
+	mv a0, s2
+	li a7, 1
+	ecall
+
+	la, a0, msg_linha_nova
+	li a7, 4
+	ecall
+
 	# iniciar jogo
 		
 	la a0, msg_jogar
 	li a7, 4
 	ecall
 	
-	loop_jogar:
+	
 		li a7, 5
 		ecall
 			
@@ -51,9 +103,6 @@ main:
 		call resetar_maos
 		call jogar
 
-		la a0, msg_jogar_novamente
-		li a7, 4
-		ecall
 		j loop_jogar
 
 	j fim
@@ -106,7 +155,10 @@ jogar:
 
 	call calcula_vencedor
 
-	call imrpime_vencedor
+	call imprime_vencedor
+	#verificar quantidade de cartas no baralho
+	call validar_baralho
+	call imprime_baralho  
 
 	lw 		ra, 0(sp)			#Restaurando endereço de retorno
 	addi 	sp, sp, 4

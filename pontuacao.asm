@@ -1,7 +1,11 @@
+#Daniele Rohr - 2121101060
+#Luiz Henrique Rigo Faccio - 2211100003
+
 
     .globl calcula_pontos_jogador, calcula_pontos_dealer, calcula_vencedor
 
             .text
+
 
 calcula_pontos_jogador:			#Retorna em a0 o valor nas mãos do jogador, utiliza temporarios, s0, s1 e argumentos | Preserva o ra
 	
@@ -120,15 +124,21 @@ calcula_vencedor:               #Verifica quem ganhou, retorna em a0: a0<0 se o 
     j       calcula_vencedor_fim
 
     calcula_vencedor_dealer_vence:
+
+    #total de vitórias do dealer fica em s2 (NÃO USAR PARA OUTRAS OPERAÇÕES)
+
     li      a0, -1
+    addi s2, s2, 1
     j       calcula_vencedor_fim
 
     calcula_vencedor_jogador_vence:
+
+    #total de vitórias do jogador fica em t5 (NÃO USAR PARA OUTRAS OPERAÇÕES)
     li      a0, 1
+    addi t5, t5, 1
 
     calcula_vencedor_fim:
     lw 		ra, 0(sp)			#Restaurando endereço de retorno
     addi 	sp, sp, 4
 		
 	ret
-

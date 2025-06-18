@@ -7,9 +7,7 @@
 	baralho: 				.word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 	
-
-
-    .globl validar_carta
+    .globl validar_carta, validar_baralho, resetar_baralho, baralho
 
 				.text
 
@@ -30,219 +28,23 @@ validar_carta:
 	
 
 	#valor da carta está em a0
-	#registradores: a2 para comparar valor, a3 para armazenar valor do endereço, a4 para armazenar valor do vetor, a5 para comparar valor com 4
-
-	li a5, 4	#comparar valor no vetor de baralho
-	li t2, 40 	#comparar valor de cartas distribuídas
-	li t3, 0    #para resetar o baralho - contador
-	li t4, 13	#para resetar o baralho - i final
-	li t5, 0	#valor 0 par armazenar no vetor
-		
-
-	#verifica se o baralho é válido:
-	#beq s11, t2, resetar_baralho		#se já tiverem saído 40 cartas, o baralho deverá ser resetado
-
-	#senão, verifica a carta
-
-	li a2, 1
-	beq a0, a2, carta_1
-
-	li a2, 2
-	beq a0, a2, carta_2
-
-	li a2, 3
-	beq a0, a2, carta_3
-
-	li a2, 4
-	beq a0, a2, carta_4
-
-	li a2, 5
-	beq a0, a2, carta_5
-
-	li a2, 6
-	beq a0, a2, carta_6
-
-	li a2, 7
-	beq a0, a2, carta_7
-
-	li a2, 8
-	beq a0, a2, carta_8
-
-	li a2, 9
-	beq a0, a2, carta_9
-
-	li a2, 10
-	beq a0, a2, carta_10
-
-	li a2, 11
-	beq a0, a2, carta_11
-
-	li a2, 12
-	beq a0, a2, carta_12
-
-	li a2, 13
-	beq a0, a2, carta_13
-
-	carta_1:
-
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 0(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5, carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
-
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 0(a3)
-		addi 	s11, s11, 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
-
-
-	carta_2:
-
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 4(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5, carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
-
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 4(a3)
-		addi 	s11, s11, 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
-
-
-	carta_3:
-
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 8(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5 carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
-
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 8(a3)
-		addi 	s11, s11, 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
-
+	la a3, baralho 	#armazena endereço do vetor
+	li a2, 4 		#armazena para encontrar posição do vetor
 	
-	carta_4:
 
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 12(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5, carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
+	addi a1, a0, -1 	#faz o valor da carta - 1
+	mul a1, a1, a2 	# multiplica por 4 para encontrar a posição do vetor
 
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 12(a3)
-		addi 	s11, s11, 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
+	#atualizar endereço 
+	add a3, a3, a1 
 
-	carta_5:
+	#carregar valor presente na posição da carta
+	lw a4, 0(a3)
 
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 16(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5, carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
+	#verifica se valor presente na posição é menor que 4
+	ble a4, a2, carta_valida #se for menor que 4, a carta é válida
 
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 16(a3)
-		addi 	s11, s11, 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
 
-	carta_6:
-
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 20(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5, carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
-
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 20(a3)
-		addi 	s11, s11, 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
-
-	carta_7:
-
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 24(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5, carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
-
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 24(a3)
-		addi 	s11, s11, 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
-
-	carta_8:
-
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 28(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5, carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
-
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 28(a3)
-		addi 	s11, s11, 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
-	
-	carta_9:
-
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 32(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5, carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
-
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 32(a3)
-		addi 	s11, s11 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
-	
-	carta_10:
-
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 36(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5, carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
-
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 36(a3)
-		addi 	s11, s11, 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
-	
-	carta_11:
-
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 40(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5, carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
-
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 40(a3)
-		addi 	s11, s11, 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
-	
-	carta_12:
-
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 44(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5, carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
-
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 44(a3)
-		addi 	s11, s11, 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
-
-	carta_13:
-
-		la 		a3, baralho  #carrega endereço do baralho
-		lw 		a4, 48(a3)	 #carrega primeira posição do baralho
-		bgt 	a4, a5, carta_invalida #se o valor do vetor for maior que 4, a carta é inválida
-
-		# continua aqui se a carta for válida
-		addi 	a4, a4, 1	#adiciona 1 no valor do vetor
-		sw 		a4, 48(a3)
-		addi 	s11, s11, 1	#incrementa contador de cartas já distribuídas
-		j retorna_valor
-		
-	
 	carta_invalida:	
 
 		# gera outra carta aleatória e inicia a verificação novamente
@@ -254,23 +56,15 @@ validar_carta:
 		j validar_carta
 
 	
+	carta_valida:
 
-	resetar_baralho:
+		#incrementar contador de cartas que já saíram
+		addi s11, s11, 1
 
-		li s11, 0 	# reseta contador
-
-		la t6, baralho	#carrega endereço do vetor
-
-	loop_reset:
-		
-		beq  t3, t4, carta_invalida # verifica se já percorreu todo o vetor. Quanto percorrer, gera nova carta válida
-
-		sw t5, 0(t6)	#coloca 0 nas posições
-
-		addi t6, t6, 4	#atualiza endereço
-
-		j loop_reset
-
+		#incrementar o valor a carta e atualizar o valor na memória
+		addi a4, a4, 1
+		sw a4, 0(a3)
+		#retornar valor
 
 	retorna_valor:
 
@@ -278,3 +72,48 @@ validar_carta:
 	    addi 	sp, sp, 4
 
 		ret
+
+
+validar_baralho:
+
+		addi 	sp, sp, -4			#Salvando endereço de retorno
+		sw 		ra, 0(sp)
+
+		#verifica se já saíram 40 cartas ao longo das rodadas
+		li a6, 52
+		li a5, 12
+		sub a6, a6, s11
+
+		beq a6, a5, resetar_baralho
+
+		j validar_baralho_fim
+
+	resetar_baralho:
+
+		
+			#carrega endereço do baralho
+			la t6, baralho
+
+			li t3, 13
+			li t4, 0
+
+			li s11, 0 	# reseta contador
+
+			
+		loop_reset:
+			
+			beq  t3, t4, validar_baralho_fim # verifica se já percorreu todo o vetor. Quanto percorrer, gera nova carta válida
+
+			sw zero, 0(t6)	#coloca 0 nas posições
+
+			addi t6, t6, 4	#atualiza endereço
+			addi t4, t4, 1  #atualiza contador
+
+			j loop_reset
+
+		validar_baralho_fim: 
+
+			lw 		ra, 0(sp)			#Restaurando endereço de retorno
+			addi 	sp, sp, 4
+
+			ret
