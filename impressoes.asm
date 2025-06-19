@@ -4,9 +4,9 @@
 
 					.data 
 	
-	msg_jogador: 			.string "Sua mao: |"
+	msg_jogador: 			.string "       Sua mao: "
 	
-	msg_dealer: 			.string "Mao do dealer: | "
+	msg_dealer: 			.string " Mao do dealer: "
 
 	msg_virgula:			.string " | "
 
@@ -16,9 +16,8 @@
 
 	msg_pontuacao: 			.string "\n Pontuacao: \n"
 	
-	msg_pontuacao_jogador: 	.string "\tSeus pontos: "
-
-	msg_pontuacao_dealer: 	.string "\tPontos do dealer: "
+	msg_pontuacao_mao: 	    .string "[total de pontos: "
+	msg_fecha_colchete:		.string "]\n"
 
 	msg_linha: 				.string "================================\n"
 
@@ -28,10 +27,16 @@
 	msg_perdedor: 			.string "        DEALER VENCEU!\n\n"
 	msg_empate: 			.string "           EMPATE!\n\n"
 
-    .globl msg_pontuacao, imprime_cartas_dealer, imprime_cartas_jogador, imprime_cartas_dealer_filtro, imprime_pontos_mao_jogador, imprime_pontos_mao_dealer, imprime_vencedor, msg_linha_nova
+	msg_pontuacao_total: 	.string "         PONTUACAO TOTAL\n"
+	msg_voce_dealer_:		.string "        Voce       Dealer\n"	
+	msg_espaco:				.string "         "
+	msg_espaco_meeio:		.string "     X     "
+
+	msg_total_de_cartas:	.string  "Cartas no baralho: "
+
+    .globl msg_pontuacao, imprime_cartas_dealer, imprime_cartas_jogador, imprime_cartas_dealer_filtro, imprime_pontos_mao_jogador, imprime_pontos_mao_dealer, imprime_vencedor, msg_linha_nova, imprime_pontuacao_total, imprime_numero_cartas_disponiveis
 
 				.text
-
 
 imprime_cartas_jogador:			#Utiliza s0 e argumentos (a0, a1, a7) para imprimir cartas do jogador | Preserva o ra
 	
@@ -59,9 +64,9 @@ imprime_cartas_jogador:			#Utiliza s0 e argumentos (a0, a1, a7) para imprimir ca
 
 	fim_imprime_cartas_jogador:
 
-		la 		a0, msg_linha_nova
-		li 		a7, 4
-		ecall
+		# la 		a0, msg_linha_nova
+		# li 		a7, 4
+		# ecall
 
 		lw 		ra, 0(sp)			#Restaurando endereço de retorno
 		addi 	sp, sp, 4
@@ -94,9 +99,9 @@ imprime_cartas_dealer:			#Utiliza s0 e argumentos (a0, a1, a7) para imprimir car
 
 	fim_imprime_cartas_dealer:
 
-		la 		a0, msg_linha_nova
-		li 		a7, 4
-		ecall
+		# la 		a0, msg_linha_nova
+		# li 		a7, 4
+		# ecall
 
 		lw 		ra, 0(sp)			#Restaurando endereço de retorno
 		addi 	sp, sp, 4
@@ -175,14 +180,13 @@ imprime_carta_anonima:		#Imprime carta anonima e virgula, utiliza a0 e a7
 	
 	ret
 
-
 imprime_pontos_mao_jogador:			#Utiliza argumentos (a0, a1, a7) para imprimir pontos da mão do jogador | Preserva o ra
 	
 	addi 	sp, sp, -4			#Salvando endereço de retorno
 	sw 		ra, 0(sp)
 
 	li 		a7, 4
-	la 		a0, msg_pontuacao_jogador
+	la 		a0, msg_pontuacao_mao
 	ecall
 
 	li 		a7, 1
@@ -190,7 +194,7 @@ imprime_pontos_mao_jogador:			#Utiliza argumentos (a0, a1, a7) para imprimir pon
 
 	ecall
 
-	la 		a0, msg_linha_nova
+	la 		a0, msg_fecha_colchete
 	li 		a7, 4
 	ecall
 
@@ -205,7 +209,7 @@ imprime_pontos_mao_dealer:			#Utiliza argumentos (a0, a1, a7) para calcular e im
 	sw 		ra, 0(sp)
 
 	li 		a7, 4
-	la 		a0, msg_pontuacao_dealer
+	la 		a0, msg_pontuacao_mao
 	ecall
 
 	li 		a7, 1
@@ -213,8 +217,11 @@ imprime_pontos_mao_dealer:			#Utiliza argumentos (a0, a1, a7) para calcular e im
 
 	ecall
 
-	la 		a0, msg_linha_nova
+	la 		a0, msg_fecha_colchete
 	li 		a7, 4
+	ecall
+
+	la 		a0, msg_linha_nova
 	ecall
 
 	lw 		ra, 0(sp)			#Restaurando endereço de retorno
@@ -266,4 +273,73 @@ imprime_vencedor:		#Recebe em a0: a0<0 se o dealer ganhou, a0>0 se o jogador gan
 	lw 		ra, 0(sp)			#Restaurando endereço de retorno
 	addi 	sp, sp, 4
 		
+	ret
+
+imprime_pontuacao_total:
+
+	addi 	sp, sp, -4
+	sw 		ra, 0(sp)
+
+	la a0, msg_linha
+	li a7, 4
+	ecall
+
+	la a0, msg_pontuacao_total
+	ecall
+
+	la a0, msg_voce_dealer_
+	ecall
+
+	la a0, msg_espaco
+	ecall
+
+	la t0, vitorias_jogador
+	lw a0, 0(t0)			
+	li a7, 1
+	ecall
+
+	la, a0, msg_espaco_meeio
+	li a7, 4
+	ecall
+
+	la t0, vitorias_dealer
+	lw a0, 0(t0)	
+	li a7, 1
+	ecall
+
+	la, a0, msg_linha_nova
+	li a7, 4
+	ecall
+
+	la a0, msg_linha
+	ecall
+
+	la, a0, msg_linha_nova
+	ecall
+
+	lw 		ra, 0(sp)
+	addi 	sp, sp, 4
+	ret
+
+imprime_numero_cartas_disponiveis:
+
+	addi 	sp, sp, -4
+	sw 		ra, 0(sp)
+
+	la a0, msg_total_de_cartas
+	li a7, 4
+	ecall
+
+	li s1, 52
+	call calcular_cartas_utilizadas
+	sub a0, s1, a0
+	li a7, 1
+	ecall
+
+	la a0, msg_linha_nova
+	li a7, 4
+	ecall
+
+	lw 		ra, 0(sp)
+	addi 	sp, sp, 4
 	ret

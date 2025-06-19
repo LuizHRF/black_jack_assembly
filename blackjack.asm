@@ -3,7 +3,7 @@
 	
 										.data 
 
-	msg_bem_vindo: 			.string "Bem-vindo ao BlackJack!\n"
+	msg_bem_vindo: 			.string "\n\n----- BEM-VINDO AO BLACKJACK! -----\n\n"
 
 	msg_adeus: 				.string "Ate logo!\n"
 	
@@ -11,13 +11,7 @@
 	
 	msg_jogar_novamente: 	.string "Deseja jogar novamente? (1) Sim, (0) Não \n"
 	
-	msg_acao: 				.string "\nEscolha uma acao: \n\t[1] Hit | [0] Stay\n\n"
-	
-	msg_total_de_cartas:	.string  "Cartas no baralho: "
-
-	msg_pontos_jogador:		.string  "         Jogador: "
-
-	msg_pontos_dealer:		.string  "         Dealer: "
+	msg_acao: 				.string "\n\tEscolha uma acao: \n\t[1] Hit | [0] Stay\n\n"
 	
 	cartas_dealer: 		.word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	
@@ -38,56 +32,8 @@ main:
 	ecall
 
 loop_jogar:
-	
-	# mensagem total de cartas
-	la a0, msg_total_de_cartas
-	li a7, 4
-	ecall
 
-	#imprimir total de cartas
-	li s1, 52	#carrega o valor 52
-	call calcular_cartas_utilizadas
-	sub a0, s1, a0 #subtrai o total de cartas que ja saíram e chama syscall
-	li a7, 1
-	ecall
-
-	#mensagem pontuação
-	la a0, msg_pontuacao
-	li a7, 4
-	ecall
-
-	#mensagem pontuação jogador
-	la a0, msg_pontos_jogador
-	li a7, 4
-	ecall
-
-	#imprimir pontos
-	la t0, vitorias_jogador
-	lw a0, 0(t0)				#carrega o valor de vitorias_jogador
-	li a7, 1
-	ecall
-
-	la, a0, msg_linha_nova
-	li a7, 4
-	ecall
-
-	#mensagem pontuação dealer:
-	la a0, msg_pontos_dealer
-	li a7, 4
-	ecall
-
-	#imprimir pontos
-	la t0, vitorias_dealer
-	lw a0, 0(t0)	
-	li a7, 1
-	ecall
-
-	la, a0, msg_linha_nova
-	li a7, 4
-	ecall
-
-	# iniciar jogo
-		
+	# iniciar jogo	
 	la a0, msg_jogar
 	li a7, 4
 	ecall
@@ -96,11 +42,14 @@ loop_jogar:
 	ecall
 		
 	# se for 1, joga
-	
 	beqz a0, fim
+
+	call imprime_numero_cartas_disponiveis
+
+	call imprime_pontuacao_total
 	
 	call validar_baralho
-	call imprime_baralho
+	#call imprime_baralho
 	call resetar_maos
 	call jogar
 
@@ -131,6 +80,7 @@ jogar:
 		call gera_carta_jogador
 		call imprime_cartas_jogador
 		call imprime_pontos_mao_jogador
+		call imprime_cartas_dealer_filtro
 		call calcula_pontos_jogador
 
 		slti t0, a0, 22 				#verifica se a mão do jogador passou de 21		
@@ -144,7 +94,7 @@ jogar:
 		beqz 	t0, fim_rodada
 
 		call 	gera_carta_dealer
-		call 	imprime_cartas_dealer
+		# call 	imprime_cartas_dealer
 
 		j dealer_joga
 
@@ -172,6 +122,8 @@ jogar:
 	j retorno_rodada
 
 fim:
+
+	call imprime_pontuacao_total
 
 	la a0, msg_adeus
 	li a7, 4
