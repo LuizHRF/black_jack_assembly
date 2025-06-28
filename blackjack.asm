@@ -11,7 +11,7 @@
 	
 	msg_jogar_novamente: 	.string "Deseja jogar novamente? (1) Sim, (0) Não \n"
 	
-	msg_acao: 				.string "\n\tEscolha uma acao: \n\t[1] Hit | [0] Stay\n\n"
+	msg_acao: 				.string "\n\tEscolha uma acao: \n\t[1] Hit | [0] Stand\n\n"
 	
 	cartas_dealer: 		.word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	
